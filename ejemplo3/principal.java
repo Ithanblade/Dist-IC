@@ -1,6 +1,7 @@
 package ejemplo3;
 public class principal {
 
+    @SuppressWarnings("static-access")
     public static void main(String[] args) {
 
         hiloSec hiloSec = new hiloSec();
