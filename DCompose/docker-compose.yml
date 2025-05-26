@@ -3,17 +3,45 @@ services:
   nginx:
     image: nginx:latest
     container_name: nginx
+    volumes:
+      - ./aplicacion2:/usr/share/nginx/html
     ports:
       - "8085:80"
-    
+    networks:
+      - Red14
+
   apache:
     image: httpd:latest
     container_name: apache
     ports:
       - "8086:80"
+    networks:
+      - Red14
 
   phpmyadmin:
     image: phpmyadmin:latest
     container_name: php
     ports:
       - "8087:80"
+    networks:
+      - Red14
+    volumes:
+      - ./datos:/app/data
+  
+  python:
+    build: 
+      context: ./aplicacion1
+      dockerfile: Dockerfile
+    container_name: python
+    ports:
+      - "8088:5005"
+    networks:
+      - Red14
+
+
+networks:
+  Red14:
+
+volumes:
+  datos:
+  
