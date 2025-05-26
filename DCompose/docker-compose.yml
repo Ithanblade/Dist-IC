@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "8085:80"
+    
+  apache:
+    image: httpd:latest
+    container_name: apache
+    ports:
+      - "8086:80"
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: php
+    ports:
+      - "8087:80"
