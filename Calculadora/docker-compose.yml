@@ -1,0 +1,48 @@
+version: '3.8'
+services:
+
+  principal:
+    container_name: calculadora
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      - suma
+      - resta
+      - multiplicacion
+      - division
+
+  suma:
+    container_name: suma
+    build:
+      context: ./suma
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+
+  resta:
+    container_name: resta
+    build:
+      context: ./resta
+      dockerfile: Dockerfile
+    ports:
+      - "5002:5002"
+
+  multiplicacion:
+    container_name: multiplicacion
+    build:
+      context: ./multiplicacion
+      dockerfile: Dockerfile
+    ports:
+      - "5003:5003"
+  
+  division:
+    container_name: division
+    build:
+      context: ./division
+      dockerfile: Dockerfile
+    ports:
+      - "5004:5004"
+
