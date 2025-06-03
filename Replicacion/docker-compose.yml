@@ -1,7 +1,7 @@
 version: '3'
+
 services:
   mysql_maestro:
-  #mysql-bin.000001  157 replica
     image: mysql:8.0
     container_name: mysql_maestro
     command: --server-id=1 --log-bin=mysql-bin --binlog-do-db=replica
@@ -10,7 +10,9 @@ services:
       MYSQL_DATABASE: replica
     ports:
       - "3306:3306"
-    
+    volumes:
+      - maestro_data:/var/lib/mysql
+
   mysql_esclavo:
     image: mysql:8.0
     container_name: mysql_esclavo
@@ -20,6 +22,8 @@ services:
       MYSQL_DATABASE: replica
     ports:
       - "3307:3306"
+    volumes:
+      - esclavo_data:/var/lib/mysql
 
   phpmyadmin:
     image: phpmyadmin:latest
@@ -30,5 +34,24 @@ services:
     environment:
       PMA_HOSTS: mysql_maestro,mysql_esclavo
       PMA_ARBITRARY: 1
+      PMA_USER: root
+      PMA_PASSWORD: root
     ports:
       - "8080:80"
+
+  wordpress:
+    image: wordpress:latest
+    container_name: wordpress_app
+    depends_on:
+      - mysql_maestro
+    ports:
+      - "8085:80"
+    environment:
+      WORDPRESS_DB_HOST: mysql_maestro:3306
+      WORDPRESS_DB_NAME: replica
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_PASSWORD: root
+
+volumes:
+  maestro_data:
+  esclavo_data:
