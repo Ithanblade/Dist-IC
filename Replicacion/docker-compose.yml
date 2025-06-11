@@ -9,7 +9,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: replica
     ports:
-      - "3306:3306"
+      - "3310:3306"
     volumes:
       - maestro_data:/var/lib/mysql
 
@@ -21,7 +21,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: replica
     ports:
-      - "3307:3306"
+      - "3311:3306"
     volumes:
       - esclavo_data:/var/lib/mysql
 
