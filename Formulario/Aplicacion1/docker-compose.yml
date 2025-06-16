@@ -1,0 +1,49 @@
+version: '3'
+services:
+  aplicacion:
+    container_name: Formulario
+    build: 
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - MYSQL_HOST=base_datos
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+      - MYSQL_DB=db_informacion
+      - MYSQL_PORT=3306
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    environment:
+      PMA_HOSTS: base_datos,base_datos2
+      PMA_ARBITRARY: 1
+    ports:
+      - "8080:80"
+  
+  base_datos:
+    image: mysql:8.0
+    command: --server-id=1 --log-bin=mysql-bin --binlog-do-db=db_informacion
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_informacion
+    ports:
+      - "3306:3306"
+  
+  base_datos2:
+    image: mysql:8.0
+    command: --server-id=2 --log-bin=mysql-bin --binlog-do-db=db_informacion
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_informacion
+    ports:
+      - "3307:3306"
+  
+  locust:
+    image: locustio/locust:latest
+    container_name: locust16
+    ports:
+      - "8089:8089"
+    volumes:
+      - C:\Users\APP DISTRIBUIDAS\Desktop\Dist IC\Formulario\Aplicacion1:/mnt/locust
+    command: ["-f", "/mnt/locust/locustfile.py"]

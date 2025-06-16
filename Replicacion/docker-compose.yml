@@ -4,26 +4,24 @@ services:
   mysql_maestro:
     image: mysql:8.0
     container_name: mysql_maestro
-    command: --server-id=1 --log-bin=mysql-bin --binlog-do-db=replica
+    # Hacer replicacion
+    command: --server-id=1 --log-bin=mysql-bin --binlog-do-db=replica # --binlog-ignore-db=replica
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: replica
+      MYSQL_DATABASE: replica # Nombre de la base de datos a replicar
     ports:
-      - "3310:3306"
-    volumes:
-      - maestro_data:/var/lib/mysql
+      - "3306:3306"
 
   mysql_esclavo:
     image: mysql:8.0
-    container_name: mysql_esclavo
-    command: --server-id=2 --log-bin=mysql-bin --binlog-do-db=replica
+    container_name: msql_esclavvo
+    # Hacer replicacion
+    command: --server-id=2 --log-bin=mysql-bin --binlog-do-db=replica # --binlog-ignore-db=replica
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: replica
+      MYSQL_DATABASE: replica # Nombre de la base de datos a replicar
     ports:
-      - "3311:3306"
-    volumes:
-      - esclavo_data:/var/lib/mysql
+      - "3307:3306" # host:contenedor
 
   phpmyadmin:
     image: phpmyadmin:latest
@@ -32,26 +30,20 @@ services:
       - mysql_maestro
       - mysql_esclavo
     environment:
-      PMA_HOSTS: mysql_maestro,mysql_esclavo
+      PMA_HOSTS: "mysql_maestro,mysql_esclavo"
       PMA_ARBITRARY: 1
-      PMA_USER: root
-      PMA_PASSWORD: root
     ports:
-      - "8080:80"
+      - "8080:80" # host:contenedor
 
   wordpress:
     image: wordpress:latest
-    container_name: wordpress_app
+    container_name: wordpress
     depends_on:
       - mysql_maestro
-    ports:
-      - "8085:80"
     environment:
       WORDPRESS_DB_HOST: mysql_maestro:3306
-      WORDPRESS_DB_NAME: replica
       WORDPRESS_DB_USER: root
       WORDPRESS_DB_PASSWORD: root
-
-volumes:
-  maestro_data:
-  esclavo_data:
+      WORDPRESS_DB_NAME: replica
+    ports:
+      - "8085:80" # host:contenedor
